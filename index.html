@@ -1,0 +1,709 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KvansCODER</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;600;700&display=swap');
+
+        :root {
+            --blood-red: #8B0000;
+            --dark-blood: #5A0000;
+            --deep-space: #0A0A0A;
+            --carbon: #1A1A1A;
+            --neon-red: #FF003C;
+            --glow-red: #FF2A54;
+            --ash: #CCCCCC;
+            --smoke: #888888;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        body {
+            background: var(--deep-space);
+            color: var(--ash);
+            min-height: 100vh;
+            overflow-x: hidden;
+            line-height: 1.6;
+        }
+
+        .matrix-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            opacity: 0.03;
+            background: 
+                repeating-linear-gradient(
+                    0deg,
+                    transparent,
+                    transparent 50px,
+                    var(--neon-red) 50px,
+                    var(--neon-red) 51px
+                );
+        }
+
+        header {
+            padding: 1.5rem 0;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            background: rgba(10, 10, 10, 0.95);
+            backdrop-filter: blur(15px);
+            border-bottom: 1px solid var(--blood-red);
+            box-shadow: 0 0 30px rgba(139, 0, 0, 0.3);
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            text-decoration: none;
+        }
+
+        .logo-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            border: 2px solid var(--neon-red);
+            box-shadow: 0 0 15px var(--neon-red);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            background: linear-gradient(45deg, var(--blood-red), var(--neon-red));
+        }
+
+        .logo-avatar:hover {
+            transform: rotate(10deg) scale(1.1);
+            box-shadow: 0 0 25px var(--glow-red);
+        }
+
+        .logo-text {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--neon-red);
+            text-shadow: 0 0 10px currentColor;
+            letter-spacing: -1px;
+        }
+
+        .lang-terminal {
+            position: relative;
+            background: var(--carbon);
+            border: 1px solid var(--blood-red);
+            border-radius: 8px;
+            padding: 0.5rem 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .lang-terminal:hover {
+            box-shadow: 0 0 20px rgba(255, 0, 60, 0.4);
+            transform: translateY(-2px);
+        }
+
+        .lang-display {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--neon-red);
+            font-weight: 600;
+        }
+
+        .lang-dropdown {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            margin-top: 0.5rem;
+            background: var(--carbon);
+            border: 1px solid var(--blood-red);
+            border-radius: 8px;
+            min-width: 180px;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-10px);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            z-index: 1001;
+        }
+
+        .lang-dropdown.active {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        .lang-option {
+            padding: 0.8rem 1rem;
+            border-bottom: 1px solid rgba(139, 0, 0, 0.3);
+            transition: all 0.2s ease;
+            color: var(--ash);
+            cursor: pointer;
+        }
+
+        .lang-option:last-child {
+            border-bottom: none;
+        }
+
+        .lang-option:hover {
+            background: var(--blood-red);
+            color: white;
+            padding-left: 1.5rem;
+        }
+
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            padding: 6rem 2rem 2rem;
+            text-align: center;
+        }
+
+        .hero-content {
+            max-width: 800px;
+        }
+
+        .typewriter {
+            font-size: clamp(2.5rem, 5vw, 4rem);
+            font-weight: 700;
+            margin-bottom: 2rem;
+            color: var(--neon-red);
+            text-shadow: 0 0 20px currentColor;
+        }
+
+        .hero-subtitle {
+            font-size: 1.3rem;
+            margin-bottom: 3rem;
+            color: var(--smoke);
+            line-height: 1.8;
+        }
+
+        .about {
+            padding: 6rem 2rem;
+            background: var(--carbon);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .section-title {
+            font-size: 2.5rem;
+            text-align: center;
+            margin-bottom: 4rem;
+            color: var(--neon-red);
+            text-shadow: 0 0 15px currentColor;
+            position: relative;
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 3px;
+            background: var(--neon-red);
+            box-shadow: 0 0 10px currentColor;
+        }
+
+        .about-content {
+            font-size: 1.2rem;
+            line-height: 1.8;
+            color: var(--smoke);
+            text-align: center;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .skills {
+            padding: 6rem 2rem;
+        }
+
+        .skills-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .skill-card {
+            background: rgba(26, 26, 26, 0.8);
+            border: 1px solid var(--blood-red);
+            border-radius: 12px;
+            padding: 2rem;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+            overflow: hidden;
+            text-align: center;
+        }
+
+        .skill-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(
+                90deg,
+                transparent,
+                rgba(255, 0, 60, 0.1),
+                transparent
+            );
+            transition: left 0.6s ease;
+        }
+
+        .skill-card:hover::before {
+            left: 100%;
+        }
+
+        .skill-card:hover {
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 
+                0 10px 30px rgba(139, 0, 0, 0.3),
+                0 0 0 1px var(--neon-red);
+        }
+
+        .skill-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            color: var(--neon-red);
+            text-shadow: 0 0 15px currentColor;
+        }
+
+        .skill-name {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: var(--ash);
+        }
+
+        .channel {
+            padding: 6rem 2rem;
+            background: var(--carbon);
+            text-align: center;
+        }
+
+        .channel-card {
+            background: rgba(26, 26, 26, 0.8);
+            border: 1px solid var(--blood-red);
+            border-radius: 12px;
+            padding: 3rem;
+            max-width: 600px;
+            margin: 0 auto;
+            transition: all 0.4s ease;
+        }
+
+        .channel-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(139, 0, 0, 0.2);
+        }
+
+        .channel-icon {
+            font-size: 4rem;
+            margin-bottom: 1.5rem;
+            color: var(--neon-red);
+            text-shadow: 0 0 20px currentColor;
+        }
+
+        .channel-title {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            color: var(--ash);
+        }
+
+        .channel-desc {
+            font-size: 1.1rem;
+            margin-bottom: 2rem;
+            color: var(--smoke);
+            line-height: 1.7;
+        }
+
+        .channel-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.8rem;
+            padding: 1rem 2rem;
+            background: var(--blood-red);
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            border: 1px solid transparent;
+        }
+
+        .channel-link:hover {
+            background: transparent;
+            border-color: var(--neon-red);
+            color: var(--neon-red);
+            gap: 1.2rem;
+            box-shadow: 0 0 20px var(--neon-red);
+        }
+
+        footer {
+            background: var(--deep-space);
+            border-top: 1px solid var(--blood-red);
+            padding: 3rem 2rem 2rem;
+            text-align: center;
+        }
+
+        .footer-content {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .footer-logo {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--neon-red);
+            text-shadow: 0 0 10px currentColor;
+            margin-bottom: 1.5rem;
+        }
+
+        .copyright {
+            color: var(--smoke);
+            font-size: 0.9rem;
+            border-top: 1px solid rgba(139, 0, 0, 0.3);
+            padding-top: 2rem;
+            margin-top: 2rem;
+        }
+
+        .fade-in {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.8s cubic-bezier(0.165, 0.84, 0.44, 1);
+        }
+
+        .fade-in.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        @media (max-width: 768px) {
+            .nav-container {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .skills-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .hero {
+                padding: 8rem 1rem 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="matrix-bg"></div>
+
+    <header>
+        <div class="nav-container">
+            <a href="#" class="logo">
+                <div class="logo-avatar"></div>
+                <span class="logo-text">KvansCODER</span>
+            </a>
+            
+            <div class="lang-terminal" id="langTerminal">
+                <div class="lang-display">
+                    <span id="currentLang">🇷🇺 Русский</span>
+                    <span>▼</span>
+                </div>
+                <div class="lang-dropdown" id="langDropdown">
+                    <div class="lang-option" data-lang="ru">🇷🇺 Русский</div>
+                    <div class="lang-option" data-lang="en">🇺🇸 English</div>
+                    <div class="lang-option" data-lang="ar">🇸🇦 العربية</div>
+                    <div class="lang-option" data-lang="zh">🇨🇳 中文</div>
+                    <div class="lang-option" data-lang="ja">🇯🇵 日本語</div>
+                    <div class="lang-option" data-lang="uk">🇺🇦 Українська</div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <section class="hero">
+        <div class="hero-content">
+            <h1 class="typewriter" data-ru="KvansCODER" data-en="KvansCODER" data-ar="KvansCODER" data-zh="KvansCODER" data-ja="KvansCODER" data-uk="KvansCODER">KvansCODER</h1>
+            <p class="hero-subtitle" data-ru="Разработчик со страстью к созданию чистого, эффективного кода. Специализируюсь на Python, Java, JavaScript и других технологиях." data-en="Developer with a passion for creating clean, efficient code. Specializing in Python, Java, JavaScript and other technologies." data-ar="مطور بشغف لإنشاء كود نظيف وفعال. متخصص في Python، Java، JavaScript وتقنيات أخرى." data-zh="热衷于创建干净、高效代码的开发人员。专注于Python、Java、JavaScript和其他技术。" data-ja="クリーンで効率的なコードを作成することに情熱を持つ開発者。Python、Java、JavaScriptなどの技術を専門としています。" data-uk="Розробник із пристрастю до створення чистого, ефективного коду. Спеціалізуюсь на Python, Java, JavaScript та інших технологіях.">Разработчик со страстью к созданию чистого, эффективного кода. Специализируюсь на Python, Java, JavaScript и других технологиях.</p>
+        </div>
+    </section>
+
+    <section class="about">
+        <div class="container">
+            <h2 class="section-title" data-ru="Обо мне" data-en="About Me" data-ar="عني" data-zh="关于我" data-ja="私について" data-uk="Про мене">Обо мне</h2>
+            <div class="about-content" data-ru="Я разработчик, который живет кодом. Каждый проект - это вызов, каждая строка кода - искусство. Специализируюсь на создании качественных решений с использованием современных технологий." data-en="I am a developer who lives by code. Every project is a challenge, every line of code is art. I specialize in creating quality solutions using modern technologies." data-ar="أنا مطور يعيش بالكود. كل مشروع هو تحدٍ، كل سطر كود هو فن. أتخصص في إنشاء حلول عالية الجودة باستخدام التقنيات الحديثة." data-zh="我是一个以代码为生的开发人员。每个项目都是一个挑战，每一行代码都是艺术。我专注于使用现代技术创建高质量的解决方案。" data-ja="コードで生きる開発者です。すべてのプロジェクトは挑戦であり、すべてのコード行は芸術です。現代のテクノロジーを使用した高品質なソリューションの作成を専門としています。" data-uk="Я розробник, який живе кодом. Кожен проект - це виклик, кожен рядок коду - мистецтво. Спеціалізуюсь на створенні якісних рішень з використанням сучасних технологій.">Я разработчик, который живет кодом. Каждый проект - это вызов, каждая строка кода - искусство. Специализируюсь на создании качественных решений с использованием современных технологий.</div>
+        </div>
+    </section>
+
+    <section class="skills">
+        <div class="container">
+            <h2 class="section-title" data-ru="Мои навыки" data-en="My Skills" data-ar="مهاراتي" data-zh="我的技能" data-ja="私のスキル" data-uk="Мої навички">Мои навыки</h2>
+            <div class="skills-grid">
+                <div class="skill-card fade-in">
+                    <div class="skill-icon">🐍</div>
+                    <h3 class="skill-name">Python</h3>
+                    <p data-ru="От скриптов до веб-приложений и AI" data-en="From scripts to web applications and AI" data-ar="من البرامج النصية إلى تطبيقات الواب والذكاء الاصطناعي" data-zh="从脚本到Web应用程序和AI" data-ja="スクリプトからWebアプリケーション、AIまで" data-uk="Від скриптів до веб-додатків та AI">От скриптов до веб-приложений и AI</p>
+                </div>
+                <div class="skill-card fade-in">
+                    <div class="skill-icon">☕</div>
+                    <h3 class="skill-name">Java</h3>
+                    <p data-ru="Enterprise решения и Android разработка" data-en="Enterprise solutions and Android development" data-ar="حلول المؤسسات وتطوير Android" data-zh="企业解决方案和Android开发" data-ja="エンタープライズソリューションとAndroid開発" data-uk="Enterprise рішення та Android розробка">Enterprise решения и Android разработка</p>
+                </div>
+                <div class="skill-card fade-in">
+                    <div class="skill-icon">⚡</div>
+                    <h3 class="skill-name">JavaScript</h3>
+                    <p data-ru="Динамичные веб-приложения и интерфейсы" data-en="Dynamic web applications and interfaces" data-ar="تطبيقات وواجهات ويب ديناميكية" data-zh="动态Web应用程序和界面" data-ja="動的なWebアプリケーションとインターフェース" data-uk="Динамічні веб-додатки та інтерфейси">Динамичные веб-приложения и интерфейсы</p>
+                </div>
+                <div class="skill-card fade-in">
+                    <div class="skill-icon">🔷</div>
+                    <h3 class="skill-name">C#</h3>
+                    <p data-ru=".NET экосистема и разработка игр" data-en=".NET ecosystem and game development" data-ar="بيئة .NET وتطوير الألعاب" data-zh=" .NET生态系统和游戏开发" data-ja=" .NETエコシステムとゲーム開発" data-uk=" .NET екосистема та розробка ігор"> .NET экосистема и разработка игр</p>
+                </div>
+                <div class="skill-card fade-in">
+                    <div class="skill-icon">⚙️</div>
+                    <h3 class="skill-name">C/C++</h3>
+                    <p data-ru="Системное программирование и высокопроизводительные вычисления" data-en="System programming and high-performance computing" data-ar="برمجة الأنظمة والحوسبة عالية الأداء" data-zh="系统编程和高性能计算" data-ja="システムプログラミングと高性能計算" data-uk="Системне програмування та високопродуктивні обчислення">Системное программирование и высокопроизводительные вычисления</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="channel">
+        <div class="container">
+            <h2 class="section-title" data-ru="Мой Telegram" data-en="My Telegram" data-ar="تيليجرام الخاص بي" data-zh="我的Telegram" data-ja="私のTelegram" data-uk="Мій Telegram">Мой Telegram</h2>
+            <div class="channel-card fade-in">
+                <div class="channel-icon">🐧</div>
+                <h3 class="channel-title" data-ru="Linux_ware" data-en="Linux_ware" data-ar="Linux_ware" data-zh="Linux_ware" data-ja="Linux_ware" data-uk="Linux_ware">Linux_ware</h3>
+                <p class="channel-desc" data-ru="Канал где я делюсь знаниями о Linux, программировании и IT. Эксклюзивные материалы и личный опыт." data-en="Channel where I share knowledge about Linux, programming and IT. Exclusive materials and personal experience." data-ar="قناة حيث أشارك المعرفة حول Linux والبرمجة وتكنولوجيا المعلومات. مواد حصرية وتجربة شخصية." data-zh="我分享有关Linux、编程和IT知识的频道。独家材料和个人经验。" data-ja="Linux、プログラミング、ITに関する知識を共有するチャネル。限定資料と個人の経験。" data-uk="Канал де я ділюся знаннями про Linux, програмування та IT. Ексклюзивні матеріали та особистий досвід.">Канал где я делюсь знаниями о Linux, программировании и IT. Эксклюзивные материалы и личный опыт.</p>
+                <a href="https://t.me/Linux_ware" class="channel-link" target="_blank">
+                    <span data-ru="Перейти в канал" data-en="Go to channel" data-ar="انتقل إلى القناة" data-zh="进入频道" data-ja="チャンネルへ移動" data-uk="Перейти в канал">Перейти в канал</span>
+                    <span>➜</span>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-logo">KvansCODER</div>
+            <div class="copyright" data-ru="Сайт создан с кровью, потом и слезами в 2025 году" data-en="Site created with blood, sweat and tears in 2025" data-ar="تم إنشاء الموقع بالدم والعرق والدموع في عام 2025" data-zh="网站于2025年用血汗和泪水创建" data-ja="2025年に血と汗と涙で作られたサイト" data-uk="Сайт створений з кров'ю, потом і сльозами у 2025 році">Сайт создан с кровью, потом и слезами в 2025 году</div>
+        </div>
+    </footer>
+
+    <script>
+        // Переводы
+        const translations = {
+            ru: {
+                currentLang: "🇷🇺 Русский",
+                title: "KvansCODER",
+                subtitle: "Разработчик со страстью к созданию чистого, эффективного кода. Специализируюсь на Python, Java, JavaScript и других технологиях.",
+                about: "Обо мне",
+                aboutText: "Я разработчик, который живет кодом. Каждый проект - это вызов, каждая строка кода - искусство. Специализируюсь на создании качественных решений с использованием современных технологий.",
+                skills: "Мои навыки",
+                pythonDesc: "От скриптов до веб-приложений и AI",
+                javaDesc: "Enterprise решения и Android разработка",
+                jsDesc: "Динамичные веб-приложения и интерфейсы",
+                csharpDesc: ".NET экосистема и разработка игр",
+                cppDesc: "Системное программирование и высокопроизводительные вычисления",
+                telegram: "Мой Telegram",
+                channelName: "Linux_ware",
+                channelDesc: "Канал где я делюсь знаниями о Linux, программировании и IT. Эксклюзивные материалы и личный опыт.",
+                channelLink: "Перейти в канал",
+                copyright: "Сайт создан с кровью, потом и слезами в 2025 году"
+            },
+            en: {
+                currentLang: "🇺🇸 English",
+                title: "KvansCODER",
+                subtitle: "Developer with a passion for creating clean, efficient code. Specializing in Python, Java, JavaScript and other technologies.",
+                about: "About Me",
+                aboutText: "I am a developer who lives by code. Every project is a challenge, every line of code is art. I specialize in creating quality solutions using modern technologies.",
+                skills: "My Skills",
+                pythonDesc: "From scripts to web applications and AI",
+                javaDesc: "Enterprise solutions and Android development",
+                jsDesc: "Dynamic web applications and interfaces",
+                csharpDesc: ".NET ecosystem and game development",
+                cppDesc: "System programming and high-performance computing",
+                telegram: "My Telegram",
+                channelName: "Linux_ware",
+                channelDesc: "Channel where I share knowledge about Linux, programming and IT. Exclusive materials and personal experience.",
+                channelLink: "Go to channel",
+                copyright: "Site created with blood, sweat and tears in 2025"
+            },
+            ar: {
+                currentLang: "🇸🇦 العربية",
+                title: "KvansCODER",
+                subtitle: "مطور بشغف لإنشاء كود نظيف وفعال. متخصص في Python، Java، JavaScript وتقنيات أخرى.",
+                about: "عنى",
+                aboutText: "أنا مطور يعيش بالكود. كل مشروع هو تحدٍ، كل سطر كود هو فن. أتخصص في إنشاء حلول عالية الجودة باستخدام التقنيات الحديثة.",
+                skills: "مهاراتي",
+                pythonDesc: "من البرامج النصية إلى تطبيقات الواب والذكاء الاصطناعي",
+                javaDesc: "حلول المؤسسات وتطوير Android",
+                jsDesc: "تطبيقات وواجهات ويب ديناميكية",
+                csharpDesc: "بيئة .NET وتطوير الألعاب",
+                cppDesc: "برمجة الأنظمة والحوسبة عالية الأداء",
+                telegram: "تيليجرام الخاص بي",
+                channelName: "Linux_ware",
+                channelDesc: "قناة حيث أشارك المعرفة حول Linux والبرمجة وتكنولوجيا المعلومات. مواد حصرية وتجربة شخصية.",
+                channelLink: "انتقل إلى القناة",
+                copyright: "تم إنشاء الموقع بالدم والعرق والدموع في عام 2025"
+            },
+            zh: {
+                currentLang: "🇨🇳 中文",
+                title: "KvansCODER",
+                subtitle: "热衷于创建干净、高效代码的开发人员。专注于Python、Java、JavaScript和其他技术。",
+                about: "关于我",
+                aboutText: "我是一个以代码为生的开发人员。每个项目都是一个挑战，每一行代码都是艺术。我专注于使用现代技术创建高质量的解决方案。",
+                skills: "我的技能",
+                pythonDesc: "从脚本到Web应用程序和AI",
+                javaDesc: "企业解决方案和Android开发",
+                jsDesc: "动态Web应用程序和界面",
+                csharpDesc: " .NET生态系统和游戏开发",
+                cppDesc: "系统编程和高性能计算",
+                telegram: "我的Telegram",
+                channelName: "Linux_ware",
+                channelDesc: "我分享有关Linux、编程和IT知识的频道。独家材料和个人经验。",
+                channelLink: "进入频道",
+                copyright: "网站于2025年用血汗和泪水创建"
+            },
+            ja: {
+                currentLang: "🇯🇵 日本語",
+                title: "KvansCODER",
+                subtitle: "クリーンで効率的なコードを作成することに情熱を持つ開発者。Python、Java、JavaScriptなどの技術を専門としています。",
+                about: "私について",
+                aboutText: "コードで生きる開発者です。すべてのプロジェクトは挑戦であり、すべてのコード行は芸術です。現代のテクノロジーを使用した高品質なソリューションの作成を専門としています。",
+                skills: "私のスキル",
+                pythonDesc: "スクリプトからWebアプリケーション、AIまで",
+                javaDesc: "エンタープライズソリューションとAndroid開発",
+                jsDesc: "動的なWebアプリケーションとインターフェース",
+                csharpDesc: " .NETエコシステムとゲーム開発",
+                cppDesc: "システムプログラミングと高性能計算",
+                telegram: "私のTelegram",
+                channelName: "Linux_ware",
+                channelDesc: "Linux、プログラミング、ITに関する知識を共有するチャネル。限定資料と個人の経験。",
+                channelLink: "チャンネルへ移動",
+                copyright: "2025年に血と汗と涙で作られたサイト"
+            },
+            uk: {
+                currentLang: "🇺🇦 Українська",
+                title: "KvansCODER",
+                subtitle: "Розробник із пристрастю до створення чистого, ефективного коду. Спеціалізуюсь на Python, Java, JavaScript та інших технологіях.",
+                about: "Про мене",
+                aboutText: "Я розробник, який живе кодом. Кожен проект - це виклик, кожен рядок коду - мистецтво. Спеціалізуюсь на створенні якісних рішень з використанням сучасних технологій.",
+                skills: "Мої навички",
+                pythonDesc: "Від скриптів до веб-додатків та AI",
+                javaDesc: "Enterprise рішення та Android розробка",
+                jsDesc: "Динамічні веб-додатки та інтерфейси",
+                csharpDesc: " .NET екосистема та розробка ігор",
+                cppDesc: "Системне програмування та високопродуктивні обчислення",
+                telegram: "Мій Telegram",
+                channelName: "Linux_ware",
+                channelDesc: "Канал де я ділюся знаннями про Linux, програмування та IT. Ексклюзивні матеріали та особистий досвід。",
+                channelLink: "Перейти в канал",
+                copyright: "Сайт створений з кров'ю, потом і сльозами у 2025 році"
+            }
+        };
+
+        // Языковой селектор
+        const langTerminal = document.getElementById('langTerminal');
+        const langDropdown = document.getElementById('langDropdown');
+        const langOptions = document.querySelectorAll('.lang-option');
+        const currentLang = document.getElementById('currentLang');
+
+        function changeLanguage(lang) {
+            const t = translations[lang];
+            
+            // Обновляем все элементы с data-атрибутами
+            document.querySelectorAll('[data-' + lang + ']').forEach(element => {
+                const key = element.getAttribute('data-' + lang);
+                if (element.tagName === 'INPUT') {
+                    element.placeholder = key;
+                } else {
+                    element.textContent = key;
+                }
+            });
+
+            // Обновляем текущий язык в селекторе
+            currentLang.textContent = t.currentLang;
+            
+            // Сохраняем выбор в localStorage
+            localStorage.setItem('selectedLanguage', lang);
+        }
+
+        langTerminal.addEventListener('click', (e) => {
+            e.stopPropagation();
+            langDropdown.classList.toggle('active');
+        });
+
+        langOptions.forEach(option => {
+            option.addEventListener('click', () => {
+                const lang = option.getAttribute('data-lang');
+                changeLanguage(lang);
+                langDropdown.classList.remove('active');
+            });
+        });
+
+        document.addEventListener('click', () => {
+            langDropdown.classList.remove('active');
+        });
+
+        // Загружаем сохраненный язык или определяем по браузеру
+        const savedLang = localStorage.getItem('selectedLanguage');
+        const browserLang = navigator.language.slice(0, 2);
+        const defaultLang = translations[browserLang] ? browserLang : 'ru';
+        
+        changeLanguage(savedLang || defaultLang);
+
+        // Анимации при скролле
+        const fadeElements = document.querySelectorAll('.fade-in');
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        });
+
+        fadeElements.forEach(element => {
+            observer.observe(element);
+        });
+
+        // Плавная прокрутка
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+</html>
