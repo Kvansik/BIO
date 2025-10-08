@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KvansCODER</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Courier New', monospace;
+        }
+
+        body {
+            background: #0a0a0a;
+            color: #00ff00;
+            min-height: 100vh;
+            overflow-x: hidden;
+            line-height: 1.4;
+        }
+
+        .terminal {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .command-line {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .prompt {
+            color: #00ff00;
+            margin-right: 10px;
+        }
+
+        .cursor {
+            animation: blink 1s infinite;
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0; }
+        }
+
+        .output {
+            margin: 20px 0;
+            white-space: pre-line;
+        }
+
+        .typewriter {
+            overflow: hidden;
+            border-right: 2px solid #00ff00;
+            white-space: nowrap;
+            animation: typing 3s steps(40, end);
+        }
+
+        @keyframes typing {
+            from { width: 0 }
+            to { width: 100% }
+        }
+
+        .matrix-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            opacity: 0.1;
+            background: 
+                repeating-linear-gradient(
+                    0deg,
+                    transparent,
+                    transparent 2px,
+                    #00ff00 2px,
+                    #00ff00 3px
+                );
+        }
+
+        .lang-switcher {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #000;
+            border: 1px solid #00ff00;
+            padding: 5px 10px;
+            cursor: pointer;
+        }
+
+        .lang-dropdown {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background: #000;
+            border: 1px solid #00ff00;
+            display: none;
+        }
+
+        .lang-dropdown.active {
+            display: block;
+        }
+
+        .lang-option {
+            padding: 5px 10px;
+            cursor: pointer;
+        }
+
+        .lang-option:hover {
+            background: #00ff00;
+            color: #000;
+        }
+    </style>
+</head>
+<body>
+    <div class="matrix-bg"></div>
+    
+    <div class="lang-switcher" id="langSwitcher">
+        <span id="currentLang">RU</span>
+        <div class="lang-dropdown" id="langDropdown">
+            <div class="lang-option" data-lang="ru">RU</div>
+            <div class="lang-option" data-lang="en">EN</div>
+        </div>
+    </div>
+
+    <div class="terminal">
+        <div class="command-line">
+            <span class="prompt">kvans@coder:~$</span>
+            <span class="typewriter">whoami</span>
+        </div>
+        
+        <div class="output" id="output">
+█████ █████ █████ █████ █████
+█     █   █ █   █ █   █ █
+█     █   █ █████ █████ █████
+█     █   █ █     █   █     █
+█████ █████ █     █████ █████
+
+KvansCODER
+        </div>
+
+        <div class="command-line">
+            <span class="prompt">kvans@coder:~$</span>
+            <span class="typewriter">cat about_me.txt</span>
+        </div>
+        
+        <div class="output">
+>>> КОДЕР <<<
+
+Python | Java | JavaScript | C# | C/C++
+
+Просто парень который любит код.
+Делаю что-то своё.
+Не гонюсь за модой.
+Пишу как есть.
+
+Телеграм: t.me/Linux_ware
+        </div>
+
+        <div class="command-line">
+            <span class="prompt">kvans@coder:~$</span>
+            <span class="cursor">_</span>
+        </div>
+    </div>
+
+    <script>
+        // Простой перевод
+        const texts = {
+            ru: {
+                whoami: "KvansCODER\n\nPython | Java | JavaScript | C# | C/C++\n\nПросто парень который любит код.\nДелаю что-то своё.\nНе гонюсь за модой.\nПишу как есть.\n\nТелеграм: t.me/Linux_ware",
+                lang: "RU"
+            },
+            en: {
+                whoami: "KvansCODER\n\nPython | Java | JavaScript | C# | C/C++\n\nJust a guy who loves code.\nDoing my own thing.\nNot chasing trends.\nWriting as is.\n\nTelegram: t.me/Linux_ware",
+                lang: "EN"
+            }
+        };
+
+        const langSwitcher = document.getElementById('langSwitcher');
+        const langDropdown = document.getElementById('langDropdown');
+        const currentLang = document.getElementById('currentLang');
+        const output = document.getElementById('output');
+
+        langSwitcher.addEventListener('click', (e) => {
+            e.stopPropagation();
+            langDropdown.classList.toggle('active');
+        });
+
+        document.querySelectorAll('.lang-option').forEach(option => {
+            option.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const lang = option.getAttribute('data-lang');
+                currentLang.textContent = texts[lang].lang;
+                output.textContent = texts[lang].whoami;
+                langDropdown.classList.remove('active');
+            });
+        });
+
+        document.addEventListener('click', () => {
+            langDropdown.classList.remove('active');
+        });
+    </script>
+</body>
+</html>
